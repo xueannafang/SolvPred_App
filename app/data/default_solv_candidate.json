@@ -1,0 +1,62 @@
+[
+ {
+  "CAS": "121-44-8",
+  "Solvent": "Triethylamine"
+ },
+ {
+  "CAS": "60-29-7",
+  "Solvent": "Glycerol"
+ },
+ {
+  "CAS": "109-99-9",
+  "Solvent": "Tetrahydrofuran"
+ },
+ {
+  "CAS": "75-65-0",
+  "Solvent": "t-butyl alcohol"
+ },
+ {
+  "CAS": "67-63-0",
+  "Solvent": "2-propanol"
+ },
+ {
+  "CAS": "141-78-6",
+  "Solvent": "ethyl acetate"
+ },
+ {
+  "CAS": "67-64-1",
+  "Solvent": "acetone"
+ },
+ {
+  "CAS": "64-17-5",
+  "Solvent": "ethyl alcohol"
+ },
+ {
+  "CAS": "67-56-1",
+  "Solvent": "methanol"
+ },
+ {
+  "CAS": "75-05-8",
+  "Solvent": "acetonitrile"
+ },
+ {
+  "CAS": "67-68-5",
+  "Solvent": "dimethylsulfoxide"
+ },
+ {
+  "CAS": "71-23-8",
+  "Solvent": "1-propanol"
+ },
+ {
+    "CAS": "108-32-7",
+    "Solvent": "propylene carbonate"
+   },
+{
+   "CAS": "68-12-2",
+   "Solvent": "dimethylformamide"
+  },
+  {
+     "CAS": "872-50-4",
+     "Solvent": "Methyl-2-pyrrolidone"
+    }
+]
