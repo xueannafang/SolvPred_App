@@ -219,15 +219,13 @@ class ResultsPage(QWidget):
 
         # Mixture point
         md, mp, mh, _ = result.hsp_mixture
-        ax.scatter([md], [mp], [mh], color='red', marker='*', s=120, label='Mixture')
-        # ax.text(md, mp, mh, ' Mixture', color='red')
+        ax.scatter([md], [mp], [mh], color='green', marker='^', s=120, label='Mixture')
 
         # Target point (if provided)
         td:float = hsp_target.D  # type: ignore
         tp:float = hsp_target.P  # type: ignore
         th:float = hsp_target.H  # type: ignore
-        ax.scatter(td, tp, th, color='green', marker='^', s=100, label='Target')
-        # ax.text(td, tp, th, ' Target', color='green')
+        ax.scatter(td, tp, th, color='red', marker='*', s=100, label='Target')
 
         # If available, plot target from result? Not included in CalculationResult.
         # Users can extend to pass target separately.
@@ -244,7 +242,16 @@ class ResultsPage(QWidget):
 
         layout.addWidget(canvas)
 
-        dlg.resize(700, 520)
+        def _save_png() -> None:
+            path, _ = QFileDialog.getSaveFileName(dlg, "Save figure", "hsp_3d.png", "PNG Images (*.png)")
+            if path:
+                fig.savefig(path, dpi=150, bbox_inches='tight')
+
+        btn_png = QPushButton("Save PNG")
+        btn_png.clicked.connect(_save_png)
+        layout.addWidget(btn_png)
+
+        dlg.resize(700, 560)
         dlg.exec()
 
     def _save_json(self) -> None:
