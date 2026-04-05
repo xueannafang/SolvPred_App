@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import os
+
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -30,6 +33,9 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("SolvPred")
         self.resize(1120, 640)
 
+        _logo_path = os.path.join(os.path.dirname(__file__), "..", "assets", "logo.png")
+        self.setWindowIcon(QIcon(_logo_path))
+
         # Use light theme by default and keep plain text black
         self._theme: AppTheme = LIGHT
         self._session: SetupSession = start_setup()
@@ -46,6 +52,12 @@ class MainWindow(QMainWindow):
         sb = QVBoxLayout(self._sidebar)
         sb.setContentsMargins(14, 14, 14, 14)
         sb.setSpacing(6)
+
+        logo_label = QLabel()
+        logo_pix = QPixmap(_logo_path).scaled(48, 48, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        logo_label.setPixmap(logo_pix)
+        logo_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        sb.addWidget(logo_label)
 
         title = QLabel("SolvPred")
         title.setStyleSheet(f"color: {self._theme.text.name()}; font-size: 18px; font-weight: 800;")
