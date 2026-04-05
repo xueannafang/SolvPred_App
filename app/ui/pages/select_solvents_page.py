@@ -75,17 +75,26 @@ class SelectSolventsPage(QWidget):
         left = QVBoxLayout()
         left.addWidget(h2("All solvents"))
         self._full_list = QListWidget()
-        self._full_list.itemDoubleClicked.connect(self._add_from_list)
+        self._full_list.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
+        self._full_list.itemDoubleClicked.connect(self._add_from_double_click)
         self._full_list.setMouseTracking(True)
         self._full_list.itemEntered.connect(lambda _: self._show_solvent_tooltip(_, self._full_list))
         left.addWidget(self._full_list, 1)
+
+        add_btns = QHBoxLayout()
+        self._add_selected_btn = PrimaryButton("Add selected", theme)
+        self._add_selected_btn.clicked.connect(self._add_selected_from_list)
+        add_btns.addWidget(self._add_selected_btn)
+        add_btns.addStretch(1)
+        left.addLayout(add_btns)
+
         panes.addLayout(left, 1)
 
         right = QVBoxLayout()
         right.addWidget(h2("Selected"))
         self._selected = QListWidget()
-        # Enable standard Ctrl/Shift multi-selection
         self._selected.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
+        self._selected.itemDoubleClicked.connect(self._remove_from_double_click)
         self._selected.setMouseTracking(True)
         self._selected.itemEntered.connect(lambda _: self._show_solvent_tooltip(_, self._selected))
         right.addWidget(self._selected, 1)
@@ -115,7 +124,7 @@ class SelectSolventsPage(QWidget):
 
         root.addLayout(panes, 1)
 
-        hint = QLabel("Tip: double-click to add. Use Ctrl/Shift to multi-remove.")
+        hint = QLabel("Tip: double-click to add/remove one. Use Ctrl/Shift + button to add/remove multiple.")
         hint.setStyleSheet(f"color: {theme.text_muted.name()};")
         root.addWidget(hint)
 
@@ -126,22 +135,42 @@ class SelectSolventsPage(QWidget):
 
     # fast-search panel removed; browse filter handles search across full list
 
-    def _add_from_list(self, item: QListWidgetItem) -> None:
+    def _add_from_double_click(self, item: QListWidgetItem) -> None:
         cas = item.data(Qt.ItemDataRole.UserRole)
         if not cas:
             return
-        cas = str(cas).strip()
-        # Validate solvent exists in DB before selecting
-        if self._session.get_solvent(cas) is None:
+        self._session.select(str(cas).strip())
+        self._refresh_selected()
+
+    def _remove_from_double_click(self, item: QListWidgetItem) -> None:
+        cas = item.data(Qt.ItemDataRole.UserRole)
+        if not cas:
+            return
+        self._session.deselect(str(cas).strip())
+        self._refresh_selected()
+
+    def _add_selected_from_list(self, _item: QListWidgetItem | None = None) -> None:
+        items = self._full_list.selectedItems()
+        if not items:
+            return
+        invalid = []
+        for item in items:
+            cas = item.data(Qt.ItemDataRole.UserRole)
+            if not cas:
+                continue
+            cas = str(cas).strip()
+            if self._session.get_solvent(cas) is None:
+                invalid.append(cas)
+                continue
+            self._session.select(cas)
+        if invalid:
             dlg = QMessageBox(self)
             dlg.setIcon(QMessageBox.Icon.Warning)
-            dlg.setWindowTitle("Invalid solvent")
-            dlg.setText(f"Selected solvent {cas} is not available in the database and will be ignored.")
-            dlg.setInformativeText("If this was a custom solvent, register it first via the services.")
+            dlg.setWindowTitle("Some solvents skipped")
+            dlg.setText("Some selected solvents are not available in the database and were skipped.")
+            dlg.setInformativeText("Skipped CAS: " + ", ".join(invalid[:10]) + ("..." if len(invalid) > 10 else ""))
             dlg.setStandardButtons(QMessageBox.StandardButton.Ok)
             dlg.exec()
-            return
-        self._session.select(cas)
         self._refresh_selected()
 
     def _refresh_full_list(self) -> None:
