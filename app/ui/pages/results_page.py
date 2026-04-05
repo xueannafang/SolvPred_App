@@ -49,6 +49,8 @@ class ResultsPage(QWidget):
         self._on_edit_selection = on_edit_selection
         self._on_edit_params = on_edit_params
         self._results: list[CalculationResult] = []
+        self._filtered_results: list[CalculationResult] = []
+        self._solvent_info: dict = {}
 
         root = QVBoxLayout(self)
         root.setContentsMargins(22, 18, 22, 18)
@@ -96,6 +98,11 @@ class ResultsPage(QWidget):
         self._sort_by_error.currentIndexChanged.connect(self._apply_filters)
         filter_sort_layout.addWidget(self._sort_by_error)
 
+        # Show all / reset filters
+        self._show_all_btn = QPushButton("Show all")
+        self._show_all_btn.clicked.connect(self._reset_filters)
+        filter_sort_layout.addWidget(self._show_all_btn)
+
         root.addLayout(filter_sort_layout)
 
         actions = QHBoxLayout()
@@ -129,10 +136,12 @@ class ResultsPage(QWidget):
     def set_results(self, results: list[CalculationResult], session: SetupSession|None = None) -> None:
         # TODO: Maybe should use pctx instead of session?
         self._results = results
+        self._filtered_results = list(results)
         self._subtitle.setText(f"Found {len(self._results)} valid combinations.")
         self._table.setRowCount(0)
         self._session = session
         solvent_info = session.get_candidates() if session else None
+        self._solvent_info = solvent_info or {}
 
         for r in self._results:
             row = self._table.rowCount()
@@ -252,7 +261,12 @@ class ResultsPage(QWidget):
         if not path:
             return
         with open(path, "w", encoding="utf-8") as f:
-            json.dump([asdict(r) for r in self._results], f, indent=2, ensure_ascii=False)
+            records = []
+            for r in self._filtered_results:
+                d = asdict(r)
+                d["hsp_mixture"] = d["hsp_mixture"][:3]
+                records.append(d)
+            json.dump(records, f, indent=2, ensure_ascii=False)
 
     def _save_csv(self) -> None:
         if not self._results:
@@ -269,24 +283,55 @@ class ResultsPage(QWidget):
             return
         with open(path, "w", encoding="utf-8", newline="") as f:
             w = csv.writer(f)
-            w.writerow(["cas_comb", "c_mean_norm", "hsp_mixture", "hsp_error"]) 
-            for r in self._results:
-                w.writerow([
-                    "|".join(r.cas_comb),
-                    "|".join([str(v) for v in r.c_mean_norm]),
-                    "|".join([str(v) for v in r.hsp_mixture]),
-                    "|".join([str(v) for v in r.hsp_error]),
-                ])
+            w.writerow(["group", "cas", "name", "concentration_pct", "mix_D", "mix_P", "mix_H", "err_D", "err_P", "err_H", "n_solvents", "total_error"])
+            for group_idx, r in enumerate(self._filtered_results, start=1):
+                mix_d, mix_p, mix_h = r.hsp_mixture[0], r.hsp_mixture[1], r.hsp_mixture[2]
+                err_d, err_p, err_h = r.hsp_error[0], r.hsp_error[1], r.hsp_error[2]
+                n = len(r.cas_comb)
+                total_error = r.get_total_error()
+                for cas, conc in zip(r.cas_comb, r.c_mean_norm):
+                    name = getattr(self._solvent_info.get(cas), "Name", None) or cas
+                    w.writerow([
+                        group_idx,
+                        cas,
+                        name,
+                        f"{conc*100:.2f}",
+                        f"{mix_d:.4f}",
+                        f"{mix_p:.4f}",
+                        f"{mix_h:.4f}",
+                        f"{err_d:+.4f}",
+                        f"{err_p:+.4f}",
+                        f"{err_h:+.4f}",
+                        n,
+                        f"{total_error:.4f}",
+                    ])
+
+    def _reset_filters(self) -> None:
+        self._filter_solvent.blockSignals(True)
+        self._filter_num_solvents.blockSignals(True)
+        self._sort_by_error.blockSignals(True)
+        self._filter_solvent.clear()
+        self._filter_num_solvents.clear()
+        self._sort_by_error.setCurrentIndex(0)
+        self._filter_solvent.blockSignals(False)
+        self._filter_num_solvents.blockSignals(False)
+        self._sort_by_error.blockSignals(False)
+        self._filtered_results = list(self._results)
+        self._update_table(self._filtered_results)
 
     def _apply_filters(self) -> None:
         filtered_results = self._results
 
-        # Filter by solvent
+        # Filter by solvent (CAS or name)
         solvent_filter = self._filter_solvent.text().strip().lower()
         if solvent_filter:
             filtered_results = [
                 r for r in filtered_results
-                if any(solvent_filter in (cas.lower() or "") for cas in r.cas_comb)
+                if any(
+                    solvent_filter in cas.lower()
+                    or solvent_filter in (getattr(self._solvent_info.get(cas), "Name", "") or "").lower()
+                    for cas in r.cas_comb
+                )
             ]
 
         # Filter by number of solvents
@@ -308,6 +353,7 @@ class ResultsPage(QWidget):
             filtered_results.sort(key=lambda r: abs(r.hsp_error[1]))
         elif sort_index == 3:  # Sort by δH
             filtered_results.sort(key=lambda r: abs(r.hsp_error[2]))
+        self._filtered_results = filtered_results
         self._update_table(filtered_results)
 
     def _update_table(self, results: list[CalculationResult]) -> None:
@@ -315,7 +361,12 @@ class ResultsPage(QWidget):
         for r in results:
             row = self._table.rowCount()
             self._table.insertRow(row)
-            cas = "\n".join(r.cas_comb)
+            cas_lines = []
+            for cas_id in r.cas_comb:
+                solvent = self._solvent_info.get(cas_id)
+                name = getattr(solvent, "Name", None) if solvent else None
+                cas_lines.append(f"{cas_id} — {name}" if name else cas_id)
+            cas = "\n".join(cas_lines)
             conc = "\n".join([f"{v*100:.2f}%" for v in r.c_mean_norm])
             mix = f"({r.hsp_mixture[0]:.2f}, {r.hsp_mixture[1]:.2f}, {r.hsp_mixture[2]:.2f})"
             err = f"({r.hsp_error[0]:+.3f}, {r.hsp_error[1]:+.3f}, {r.hsp_error[2]:+.3f})"
