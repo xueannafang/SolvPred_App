@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("SolvPred")
-        self.resize(960, 640)
+        self.resize(1120, 640)
 
         # Use light theme by default and keep plain text black
         self._theme: AppTheme = LIGHT
