@@ -59,7 +59,7 @@ class CalculationResult:
         e_d = self.hsp_error[0]
         e_p = self.hsp_error[1]
         e_h = self.hsp_error[2]
-        total = (2 * e_d**2 + e_p**2 + e_h**2) ** 0.5
+        total = (e_d**2 + e_p**2 + e_h**2) ** 0.5
         return total
 
 
