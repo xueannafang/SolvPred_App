@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QCursor
 from PyQt6.QtWidgets import QLabel, QPushButton, QWidget, QHBoxLayout
 
 from app.ui.theme import AppTheme
@@ -117,3 +117,22 @@ def step_row(step_no: int, title: str, active: bool, done: bool, theme: AppTheme
 
 
 from PyQt6.QtGui import QColor  # noqa: E402 (used above)
+
+
+class FloatingTooltip(QLabel):
+    """Frameless floating label used as a persistent solvent info tooltip."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent, Qt.WindowType.ToolTip)
+        self.setWordWrap(False)
+        self.setStyleSheet(
+            "QLabel { background: #ffffc8; border: 1px solid #888; color: #111; padding: 4px 8px; }"
+        )
+        self.hide()
+
+    def show_at(self, global_pos, text: str) -> None:
+        self.setText(text)
+        self.adjustSize()
+        self.move(global_pos.x() + 14, global_pos.y() + 8)
+        self.show()
+        self.raise_()

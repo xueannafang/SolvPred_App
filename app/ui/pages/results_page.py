@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict
 from numpy.linalg import norm
 
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QIntValidator, QCursor
 from PyQt6.QtWidgets import (
     QComboBox,
@@ -20,7 +20,6 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QLineEdit,
     QHBoxLayout,
-    QToolTip,
 )
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -29,7 +28,7 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 from app.api_facade import SetupSession
 from app.models import CalculationResult
 from app.ui.theme import AppTheme
-from app.ui.widgets import h1, PrimaryButton
+from app.ui.widgets import h1, PrimaryButton, FloatingTooltip
 import app.exceptions as exc
 from collections.abc import Callable
 
@@ -132,6 +131,8 @@ class ResultsPage(QWidget):
 
         self._table.setMouseTracking(True)
         self._table.cellEntered.connect(self._show_solvent_tooltip)
+        self._table.installEventFilter(self)
+        self._tooltip = FloatingTooltip(self)
 
     def set_results(self, results: list[CalculationResult], session: SetupSession|None = None) -> None:
         # TODO: Maybe should use pctx instead of session?
@@ -395,21 +396,21 @@ class ResultsPage(QWidget):
         self._table.resizeRowsToContents()
 
     def _show_solvent_tooltip(self, row: int, column: int) -> None:
-        if column != 0:  # Ensure we are in the CAS column
+        if column != 0:
+            self._tooltip.hide()
             return
 
         item = self._table.item(row, column)
         if not item:
+            self._tooltip.hide()
             return
 
         cas_text = item.text()
-        cas_list = cas_text.splitlines()  # Split the text into individual CAS entries
-
         solvent_info = self._session.get_candidates() if self._session else {}
         tooltip_texts = []
 
-        for cas_line in cas_list:
-            cas = cas_line.split("—")[0].strip()  # Extract CAS from "CAS — Name" format
+        for cas_line in cas_text.splitlines():
+            cas = cas_line.split("—")[0].strip()
             solvent = solvent_info.get(cas)
             if solvent:
                 tooltip_texts.append(
@@ -424,15 +425,16 @@ class ResultsPage(QWidget):
                 )
 
         if tooltip_texts:
-            tooltip = QToolTip
-            tooltip.showText(QCursor.pos(), "\n\n".join(tooltip_texts), self._table)
+            self._tooltip.show_at(QCursor.pos(), "\n\n".join(tooltip_texts))
+        else:
+            self._tooltip.hide()
 
-            # Use a QTimer to re-show the tooltip every second for 5 seconds
-            def keep_tooltip_visible():
-                tooltip.showText(QCursor.pos(), "\n\n".join(tooltip_texts), self._table)
+    def eventFilter(self, obj, event) -> bool:
+        if obj is self._table and event.type() == QEvent.Type.Leave:
+            self._tooltip.hide()
+        return super().eventFilter(obj, event)
 
-            timer = QTimer(self)
-            timer.timeout.connect(keep_tooltip_visible)
-            timer.setSingleShot(True)
-            timer.start(5000)
+    def hideEvent(self, event) -> None:
+        self._tooltip.hide()
+        super().hideEvent(event)
 

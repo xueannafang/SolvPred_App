@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QCursor
 from PyQt6.QtWidgets import (
     QWidget,
@@ -17,13 +17,12 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QPushButton,
     QFileDialog,
-    QToolTip,
 )
 
 from app.api_facade import SetupSession
 from app.services import data_service as ds
 from app.ui.theme import AppTheme
-from app.ui.widgets import h1, h2, PrimaryButton, DangerButton
+from app.ui.widgets import h1, h2, PrimaryButton, DangerButton, FloatingTooltip
 import app.exceptions as exc
 from collections.abc import Callable
 from json import JSONDecodeError
@@ -78,7 +77,8 @@ class SelectSolventsPage(QWidget):
         self._full_list.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
         self._full_list.itemDoubleClicked.connect(self._add_from_double_click)
         self._full_list.setMouseTracking(True)
-        self._full_list.itemEntered.connect(lambda _: self._show_solvent_tooltip(_, self._full_list))
+        self._full_list.itemEntered.connect(lambda item: self._on_item_entered(item, self._full_list))
+        self._full_list.installEventFilter(self)
         left.addWidget(self._full_list, 1)
 
         add_btns = QHBoxLayout()
@@ -96,7 +96,8 @@ class SelectSolventsPage(QWidget):
         self._selected.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
         self._selected.itemDoubleClicked.connect(self._remove_from_double_click)
         self._selected.setMouseTracking(True)
-        self._selected.itemEntered.connect(lambda _: self._show_solvent_tooltip(_, self._selected))
+        self._selected.itemEntered.connect(lambda item: self._on_item_entered(item, self._selected))
+        self._selected.installEventFilter(self)
         right.addWidget(self._selected, 1)
 
         btns = QHBoxLayout()
@@ -127,6 +128,8 @@ class SelectSolventsPage(QWidget):
         hint = QLabel("Tip: double-click to add/remove one. Use Ctrl/Shift + button to add/remove multiple.")
         hint.setStyleSheet(f"color: {theme.text_muted.name()};")
         root.addWidget(hint)
+
+        self._tooltip = FloatingTooltip(self)
 
         # Cache a display-friendly full DB list for browsing.
         self._all_records = list(self._session._raw_db)  # noqa: SLF001 (UI convenience)
@@ -494,13 +497,13 @@ class SelectSolventsPage(QWidget):
             dlg.setStandardButtons(QMessageBox.StandardButton.Ok)
             dlg.exec()
 
-    def _show_solvent_tooltip(self, item: QListWidgetItem, where: QWidget) -> None:
+    def _on_item_entered(self, item: QListWidgetItem, where: QWidget) -> None:
         cas = item.data(Qt.ItemDataRole.UserRole)
-
         solvent = self._session.get_solvent(cas)
         if not solvent:
+            self._tooltip.hide()
             return
-        tooltip_text = (
+        text = (
             f"CAS: {solvent.CAS}\n"
             f"Name: {solvent.Name}\n"
             f"D: {solvent.D}\n"
@@ -510,15 +513,16 @@ class SelectSolventsPage(QWidget):
             f"Index: {solvent.No}\n"
             f"IMS Index: {solvent.ims_idx}"
         )
-        QToolTip.showText(QCursor.pos(), tooltip_text, where)
+        self._tooltip.show_at(QCursor.pos(), text)
 
-        def keep_tooltip_visible():
-            QToolTip.showText(QCursor.pos(), tooltip_text, where)
+    def eventFilter(self, obj, event) -> bool:
+        if obj in (self._full_list, self._selected) and event.type() == QEvent.Type.Leave:
+            self._tooltip.hide()
+        return super().eventFilter(obj, event)
 
-        timer = QTimer(self)
-        timer.timeout.connect(keep_tooltip_visible)
-        timer.setSingleShot(True)
-        timer.start(5000)
+    def hideEvent(self, event) -> None:
+        self._tooltip.hide()
+        super().hideEvent(event)
 
 class _AddCustomSolventDialog(QDialog):
     def __init__(self, parent=None, initial: dict | None = None):
