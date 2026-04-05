@@ -106,7 +106,6 @@ def get_miscibility_filter(session: SetupSession) -> Callable[[Solvent], bool]:
 #     return labeled_results
 
 __all__ = [
-    "get_placeholder_filter",
     "get_boiling_point_filter",
     "get_miscibility_filter",
     # "advanced_filter_results",
