@@ -89,9 +89,9 @@ class ParamsPage(QWidget):
         adv = QGroupBox("Parameters")
         adv_form = QFormLayout(adv)
 
-        self._err_d = QLineEdit(); self._err_d.setText("0.5"); self._err_d.setValidator(QDoubleValidator(0.0, 1e6, 6))
-        self._err_p = QLineEdit(); self._err_p.setText("0.5"); self._err_p.setValidator(QDoubleValidator(0.0, 1e6, 6))
-        self._err_h = QLineEdit(); self._err_h.setText("0.5"); self._err_h.setValidator(QDoubleValidator(0.0, 1e6, 6))
+        self._err_d = QLineEdit(); self._err_d.setText("2.0"); self._err_d.setValidator(QDoubleValidator(0.0, 1e6, 6))
+        self._err_p = QLineEdit(); self._err_p.setText("2.0"); self._err_p.setValidator(QDoubleValidator(0.0, 1e6, 6))
+        self._err_h = QLineEdit(); self._err_h.setText("2.0"); self._err_h.setValidator(QDoubleValidator(0.0, 1e6, 6))
 
         self._threshold = QLineEdit(); self._threshold.setText("0.01"); self._threshold.setValidator(QDoubleValidator(0.0, 1.0, 6))
 
@@ -243,9 +243,9 @@ class ParamsPage(QWidget):
         p = self._parse_float(self._p, 0.0)
         h = self._parse_float(self._h, 0.0)
         threshold = self._parse_float(self._threshold, 0.01)
-        err_d = self._parse_float(self._err_d, 0.5)
-        err_p = self._parse_float(self._err_p, 0.5)
-        err_h = self._parse_float(self._err_h, 0.5)
+        err_d = self._parse_float(self._err_d, 2.0)
+        err_p = self._parse_float(self._err_p, 2.0)
+        err_h = self._parse_float(self._err_h, 2.0)
         max_cosolvent = self._parse_int(self._max_cosolvent, 2)
         n_perturb = self._parse_int(self._n_perturb, 50)
         perturb_std = self._parse_float(self._perturb_std, 0.1)
@@ -274,9 +274,9 @@ class ParamsPage(QWidget):
         self._d.setText(str(float(snap.get('D', 0.0))))
         self._p.setText(str(float(snap.get('P', 0.0))))
         self._h.setText(str(float(snap.get('H', 0.0))))
-        self._err_d.setText(str(float(snap.get('err_d', 0.5))))
-        self._err_p.setText(str(float(snap.get('err_p', 0.5))))
-        self._err_h.setText(str(float(snap.get('err_h', 0.5))))
+        self._err_d.setText(str(float(snap.get('err_d', 2.0))))
+        self._err_p.setText(str(float(snap.get('err_p', 2.0))))
+        self._err_h.setText(str(float(snap.get('err_h', 2.0))))
         self._threshold.setText(str(float(snap.get('threshold', 0.01))))
         self._max_cosolvent.setText(str(int(snap.get('max_cosolvent', 2))))
         self._n_perturb.setText(str(int(snap.get('n_perturb', 50))))
@@ -287,7 +287,7 @@ class ParamsPage(QWidget):
         # Reset UI widgets to recommended defaults
         defaults = {
             'D': 0.0, 'P': 0.0, 'H': 0.0,
-            'err_d': 0.5, 'err_p': 0.5, 'err_h': 0.5,
+            'err_d': 2.0, 'err_p': 2.0, 'err_h': 2.0,
             'threshold': 0.01, 'max_cosolvent': 2,
             'n_perturb': 50, 'perturb_std': 0.1, 'temperature': 25.0,
         }
@@ -305,9 +305,9 @@ class ParamsPage(QWidget):
             self._d.setText(str(params.get("D", "0.0")))
             self._p.setText(str(params.get("P", "0.0")))
             self._h.setText(str(params.get("H", "0.0")))
-            self._err_d.setText(str(params.get("err_d", "0.5")))
-            self._err_p.setText(str(params.get("err_p", "0.5")))
-            self._err_h.setText(str(params.get("err_h", "0.5")))
+            self._err_d.setText(str(params.get("err_d", "2.0")))
+            self._err_p.setText(str(params.get("err_p", "2.0")))
+            self._err_h.setText(str(params.get("err_h", "2.0")))
             self._threshold.setText(str(params.get("threshold", "0.01")))
             self._max_cosolvent.setText(str(params.get("max_cosolvent", "2")))
             self._n_perturb.setText(str(params.get("n_perturb", "50")))
