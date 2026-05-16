@@ -12,7 +12,7 @@ To install app with an executable using `pyinstaller`:
 
 ---
 
-## Planned User Workflow (Step-wise)
+## User Workflow (Step-wise)
 
 1. **Home / Start**
    - Brief instructions and what inputs are needed.
