@@ -6,6 +6,10 @@ This repo is intended to provide a **step-wise, modern, user-friendly workflow**
 
 Use `python run_app.py` to launch.
 
+To install app with an executable using `pyinstaller`:
+
+ `pyinstaller --onefile --name=SolvPredApp --add-data "app/data;app/data" --add-data "app/assets;app/assets" --collect-all numpy run_app.py`
+
 ---
 
 ## Planned User Workflow (Step-wise)
