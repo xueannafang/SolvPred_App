@@ -2,7 +2,15 @@
 
 SolvPred_App is the **code-free desktop GUI** for SolvPred (co-solvent prediction using Hansen Solubility Parameters).
 
-This repo is intended to provide a **step-wise, modern, user-friendly workflow** analogous to the existing `SolvPred_Web` prototype, but as a standalone app that is easier to distribute and extend.
+This repo is intended to provide a **step-wise, modern, coding-free and user-friendly workflow** of SolvPred.
+
+To download SolvPred App, go to your desired directory, using git to clone this repo:
+
+`git clone https://github.com/xueannafang/SolvPred_App.git`
+
+To prepare the envirnoenment with `conda`:
+
+`conda env create --file environment.yml`.
 
 Use `python run_app.py` to launch.
 
