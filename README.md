@@ -123,7 +123,7 @@ The **Advanced** button opens additional options (Figure 9):
 - **Load user database from file** — load a custom solvent database.
 - **Manage user database** — add, edit, or remove solvents from your database.
 
-<img src="./assets/media/image9.png" width="300" alt="Figure 9. The "Advanced" candidate selection options.">
+<img src="./assets/media/image9.png" width="300" alt="Figure 9. The Advanced candidate selection options.">
 
 Once the solvent selection step is complete, click **Next** to proceed.
 
@@ -162,7 +162,7 @@ Click **Run** to proceed to the calculation page.
 
 ### Step 3: Run Calculation
 
-<img src="./assets/media/image13.png" width="700" alt="Figure 13. The "Run calculation" page with boiling point and miscibility filters.">
+<img src="./assets/media/image13.png" width="700" alt="Figure 13. The Run calculation page with boiling point and miscibility filters.">
 
 Before running, apply optional pre-calculation filters:
 
@@ -206,7 +206,7 @@ Click **Export JSON** or **Export CSV** to save the result table and full metada
 (Figure 17). Files are stored under `SolvPred_App > dist` by default and can be
 modified as needed.
 
-<img src="./assets/media/image17.png" width="700" alt="Figure 17. Metadata saved via "Export CSV".">
+<img src="./assets/media/image17.png" width="700" alt="Figure 17. Metadata saved via Export CSV.">
 
 Use **Edit selection** or **Edit params** to return to earlier steps. Click **New session**
 to start the entire process fresh.
