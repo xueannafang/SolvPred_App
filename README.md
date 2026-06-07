@@ -53,7 +53,7 @@ pyinstaller --onefile --name=SolvPredApp --add-data "app/data;app/data" --add-da
 
 ### Welcome Page
 
-This will launch the executable file `SolvPredApp.exe`. A welcome page will appear (Figure 1).
+This will launch the executable file `SolvPredApp.exe`. A welcome page will appear.
 
 <img src="./assets/media/image1.png" width="700" alt="Figure 1. Welcome page of the SolvPred App.">
 
@@ -75,48 +75,48 @@ There are three methods to add solvent candidates.
 **Method 1 — Load the default list**
 
 Click **Select default list** to load the default solvent database stored in
-`SolvPred_App > app > data > default_solv_candidate.json` (Figure 3).
+`SolvPred_App > app > data > default_solv_candidate.json`.
 
 <img src="./assets/media/image3.png" width="700" alt="Figure 3. Loading the default candidate list.">
 
 **Method 2 — Search and select individually**
 
 Double-click a solvent in the *All solvents* list, or type part of a CAS number or
-solvent name in the search box. SolvPred filters the list to show matching entries (Figure 4).
+solvent name in the search box. SolvPred filters the list to show matching entries.
 
 <img src="./assets/media/image4.png" width="680" alt="Figure 4. Searching solvents by name (left) or CAS number (right).">
 
 **Method 3 — Batch selection**
 
 Select multiple solvents from the *All solvents* list using **Ctrl** or **Shift**, then
-click **Add selected** to add them all at once (Figure 5).
+click **Add selected** to add them all at once.
 
 <img src="./assets/media/image5.png" width="600" alt="Figure 5. Adding multiple candidates in a batch.">
 
 **Viewing solvent details**
 
 Hover the cursor over any solvent to see its full property information, including boiling
-point and immiscible solvent indices (Figure 6).
+point and immiscible solvent indices.
 
 <img src="./assets/media/image6.png" width="360" alt="Figure 6. Full solvent information displayed on hover.">
 
 **Removing solvents**
 
-Use the **Remove** button to remove solvents from the *Selected* list (Figure 7).
+Use the **Remove** button to remove solvents from the *Selected* list.
 
 <img src="./assets/media/image7.png" width="660" alt="Figure 7. Removing solvents from the selected list.">
 
 **Saving and loading selections**
 
 Click **Save selection** to save the current *Selected* list as a JSON file for future
-reuse (Figure 8). Previously saved selections can be reloaded via
+reuse. Previously saved selections can be reloaded via
 **Advanced > Load solvents from file**.
 
 <img src="./assets/media/image8.png" width="700" alt="Figure 8. Saving the selected solvents as a JSON file for future use.">
 
 **Advanced candidate options**
 
-The **Advanced** button opens additional options (Figure 9):
+The **Advanced** button opens additional options:
 
 - **Add custom solvent** — add solvents not present in the database.
 - **Load solvents from file** — reload a previously saved selection.
@@ -142,15 +142,15 @@ On the **Target HSP** page, set the target HSP values and algorithm hyperparamet
 - **Temperature** — operating temperature; SolvPred applies temperature correction
   automatically.
 
-Use **Save** and **Load** to store or restore parameter configurations as JSON files
-(Figure 11). **Reset** restores all defaults. **Back** returns to the candidate selection step.
+Use **Save** and **Load** to store or restore parameter configurations as JSON files. 
+**Reset** restores all defaults. **Back** returns to the candidate selection step.
 
 <img src="./assets/media/image11.png" width="670" alt="Figure 11. Saving parameters as a JSON file.">
 
 **Achievable HSP range hints**
 
 SolvPred displays the achievable HSP range for each dimension, calculated automatically
-from the selected solvents (Figure 12). If a target value falls outside this range, no
+from the selected solvents. If a target value falls outside this range, no
 valid solution exists — the HSP of any mixture is constrained to the convex polyhedron
 formed by the candidate solvents as vertices.
 
@@ -178,7 +178,7 @@ remaining after filtration. Once satisfied, click **Run**.
 
 ### Step 4: Review Results
 
-SolvPred displays results as a sortable table on the **Results** page (Figure 14).
+SolvPred displays results as a sortable table on the **Results** page.
 
 <img src="./assets/media/image14.png" width="700" alt="Figure 14. The Results page.">
 
@@ -188,22 +188,22 @@ At the bottom of the results table you can:
 
 - Filter by solvent name or CAS number using the **Filter by solvent** box.
 - Limit results by the number of co-solvents in each mixture.
-- Sort by total HSP error or by the partial error of a specific HSP component (Figure 15).
+- Sort by total HSP error or by the partial error of a specific HSP component.
 
 <img src="./assets/media/image15.png" width="700" alt="Figure 15. Filtering by solvent (CAS No.), number of co-solvents, and sorting by total error.">
 
 **Viewing solvent details and 3D Hansen space**
 
 Hover over a result entry to see full HSP and property information for each co-solvent.
-Click **View 3D** on any entry to open an interactive 3D plot of Hansen space (Figure 16).
+Click **View 3D** on any entry to open an interactive 3D plot of Hansen space.
 Save the plot with **Save PNG**.
 
 <img src="./assets/media/image16.png" width="700" alt="Figure 16. Co-solvent details on hover (left) and interactive 3D Hansen space plot (right).">
 
 **Exporting results**
 
-Click **Export JSON** or **Export CSV** to save the result table and full metadata
-(Figure 17). Files are stored under `SolvPred_App > dist` by default and can be
+Click **Export JSON** or **Export CSV** to save the result table and full metadata.
+Files are stored under `SolvPred_App > dist` by default and can be
 modified as needed.
 
 <img src="./assets/media/image17.png" width="700" alt="Figure 17. Metadata saved via Export CSV.">
