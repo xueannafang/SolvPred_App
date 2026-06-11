@@ -210,3 +210,8 @@ modified as needed.
 
 Use **Edit selection** or **Edit params** to return to earlier steps. Click **New session**
 to start the entire process fresh.
+
+
+---
+
+This project is licensed under [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html).
