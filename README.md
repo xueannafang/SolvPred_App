@@ -1,8 +1,8 @@
 # SolvPred App
 
-SolvPred App is the **code-free desktop GUI** for SolvPred — co-solvent prediction using Hansen Solubility Parameters (HSP).
+SolvPred App is the code-free desktop GUI for [SolvPred](https://github.com/xueannafang/hsp_toolkit_solv_pred_v_2.0).
 
-It provides a **step-wise, modern, and user-friendly workflow** for solvent mixture design without writing any code.
+It provides a user-friendly workflow for solvent mixture design based on Hansen solubility parameters. (Check [here](https://github.com/xueannafang/HSP_toolkit_docs/blob/main/hsp_tool_general_intro.md) for project backgrounds.)
 
 ---
 
@@ -49,7 +49,7 @@ pyinstaller --onefile --name=SolvPredApp --add-data "app/data;app/data" --add-da
 
 ---
 
-## Detailed GUI Guide
+## Step-by-step guide
 
 ### Welcome Page
 
@@ -67,26 +67,26 @@ Click **Start** to proceed to the solvent candidate selection page.
 
 The candidate selection page contains two major panels:
 
-- **All solvents** — lists all solvents in the default database.
-- **Selected** — shows the solvents you have chosen as candidates for calculation.
+- **All solvents** lists all solvents in the default database.
+- **Selected** shows the solvents you have chosen as candidates for calculation.
 
 There are three methods to add solvent candidates.
 
-**Method 1 — Load the default list**
+**Method 1: Load the default list**
 
 Click **Select default list** to load the default solvent database stored in
 `SolvPred_App > app > data > default_solv_candidate.json`.
 
 <img src="./assets/media/image3.png" width="700" alt="Figure 3. Loading the default candidate list.">
 
-**Method 2 — Search and select individually**
+**Method 2: Search and select individually**
 
 Double-click a solvent in the *All solvents* list, or type part of a CAS number or
 solvent name in the search box. SolvPred filters the list to show matching entries.
 
 <img src="./assets/media/image4.png" width="680" alt="Figure 4. Searching solvents by name (left) or CAS number (right).">
 
-**Method 3 — Batch selection**
+**Method 3: Batch selection**
 
 Select multiple solvents from the *All solvents* list using **Ctrl** or **Shift**, then
 click **Add selected** to add them all at once.
@@ -118,10 +118,10 @@ reuse. Previously saved selections can be reloaded via
 
 The **Advanced** button opens additional options:
 
-- **Add custom solvent** — add solvents not present in the database.
-- **Load solvents from file** — reload a previously saved selection.
-- **Load user database from file** — load a custom solvent database.
-- **Manage user database** — add, edit, or remove solvents from your database.
+- **Add custom solvent** will add solvents not present in the database.
+- **Load solvents from file** will reload a previously saved selection.
+- **Load user database from file** will load a custom solvent database.
+- **Manage user database** can add, edit, or remove solvents from your database.
 
 <img src="./assets/media/image9.png" width="300" alt="Figure 9. The Advanced candidate selection options.">
 
@@ -135,11 +135,11 @@ Once the solvent selection step is complete, click **Next** to proceed.
 
 On the **Target HSP** page, set the target HSP values and algorithm hyperparameters:
 
-- **Target HSP** (δD / δP / δH) — the desired solubility parameter values.
-- **Acceptable errors** (errD / errP / errH) — how close the calculated HSP must be to
+- **Target HSP** (δD / δP / δH) are the desired solubility parameter values.
+- **Acceptable errors** (errD / errP / errH) define how close the calculated HSP must be to
   the target to count as a valid result.
-- **Max co-solvents** — the maximum number of co-solvents allowed in the mixture.
-- **Temperature** — operating temperature; SolvPred applies temperature correction
+- **Max co-solvents** is the maximum number of co-solvents allowed in the mixture.
+- **Temperature** is the operating temperature; SolvPred applies temperature correction
   automatically.
 
 Use **Save** and **Load** to store or restore parameter configurations as JSON files. 
@@ -151,7 +151,7 @@ Use **Save** and **Load** to store or restore parameter configurations as JSON f
 
 SolvPred displays the achievable HSP range for each dimension, calculated automatically
 from the selected solvents. If a target value falls outside this range, no
-valid solution exists — the HSP of any mixture is constrained to the convex polyhedron
+valid solution exists. Here, the HSP of any mixture is constrained to the convex polyhedron
 formed by the candidate solvents as vertices.
 
 <img src="./assets/media/image12.png" width="350" alt="Figure 12. Achievable HSP range hints, with a warning when the target is out of range.">
@@ -166,9 +166,9 @@ Click **Run** to proceed to the calculation page.
 
 Before running, apply optional pre-calculation filters:
 
-- **Check Boiling Point** — retains only solvents whose boiling point is below the set
+- **Check Boiling Point** will retain only solvents whose boiling point is below the set
   temperature.
-- **Check Miscibility** — retains only results where all co-solvents are expected to be
+- **Check Miscibility** will retain only results where all co-solvents are expected to be
   miscible.
 
 The bottom of the filter panel shows the total number of selected solvents and the count
