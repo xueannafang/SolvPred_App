@@ -22,15 +22,11 @@ class SetupSession:
         self.selected: list[str] = []
         # This should only be set after finalize_selection() as confirmation
         self.candidates: dict[str, Solvent] | None = None  
-        # TODO: User may occasionally want to go back to step 1 to adjust selection
-        # Should prepare for that, but only in the UI layer. 
-        # Just recall finalize_selection() afterwards.
         # Step 2: HSP target setup
         self.hsp_target: HSPTarget | None = None
         self._is_finalized: bool = False
 
     def search(self, key: str, limit: int = 50) -> list[Solvent]:
-        # TODO: not sure search through raw db or through db_map
         return ds.search_solvents(self._raw_db, key, limit=limit)
 
     def get_solvent(self, cas: str) -> Solvent | None:
@@ -45,18 +41,15 @@ class SetupSession:
             self.selected.remove(cas)
 
     def apply_filter(self, filter_func: Callable[[Solvent], bool]) -> None:
-        # TODO: filter functions come from logic.filters
         filtered = filter(lambda cas: filter_func(self._db_map[cas]), self.selected)
         self.selected = list(filtered)
 
     def get_selected(self) -> list[str]:
-        # TODO: Exception for UI layer pop up warnings
         if not self.selected:
             raise EmptySolventSelection
         return self.selected
 
     def get_candidates(self) -> dict[str, Solvent]:
-        # TODO: Exception for UI layer pop up warnings
         if not self.selected:
             raise EmptySolventSelection
         if self.candidates is not None:
@@ -66,8 +59,6 @@ class SetupSession:
     
     def finalize_selection(self):
         # Confirm current selection as candidates for calculation
-        # TODO: User may want to go back to selection step, should handle that in UI layer
-        # Just recall finalize_selection() afterwards.
         if not self.selected:
             raise EmptySolventSelection
         self.candidates = self.get_candidates()
@@ -90,10 +81,6 @@ class SetupSession:
         self.hsp_target = target
 
     def _validate_hsp_target(self, which: str) -> bool:
-        # TODO: Should call this each time when a HSP target value is set
-        # UI layer use this to give feedback to user in-time to suggest adjustments
-        # The feedback should be specific to which component is out of range on what direction.
-        # Better call the range function above to get min/max
         if self.hsp_target is None:
             raise EmptyHSPTarget
         if which.upper() not in {'H', 'P', 'D'}:
@@ -179,10 +166,6 @@ class SetupSession:
             return False, f"{type(e).__name__}: {e}"
 
     def save_user_db(self, path: str | None = None) -> tuple[bool, str]:
-        """Persist current session's user-added records to path or default.
-
-        Returns (ok, message).
-        """
         try:
             builtin = ds.load_db()
             builtin_cas = {rec.get('CAS') for rec in builtin if rec.get('CAS')}
@@ -196,8 +179,6 @@ class SetupSession:
             return False, f"{type(e).__name__}: {e}"
 
     def save_user_solvents(self) -> None:
-        # Persist current raw DB additions to the user file.
-        # Determine which records are likely user-added by comparing against builtin DB
         builtin = ds.load_db()
         builtin_cas = {rec.get('CAS') for rec in builtin if rec.get('CAS')}
         user_records = [r for r in self._raw_db if r.get('CAS') not in builtin_cas]
@@ -207,7 +188,6 @@ class SetupSession:
         """
         Load user-supplied solvents and select them in the current session.
         File should be in the format as the default candidate list.
-
         """
         if path is None:
             path = str(ds._USER_SELECT)

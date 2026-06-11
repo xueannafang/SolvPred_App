@@ -228,9 +228,6 @@ class ResultsPage(QWidget):
         th:float = hsp_target.H  # type: ignore
         ax.scatter(td, tp, th, color='red', marker='*', s=100, label='Target')
 
-        # If available, plot target from result? Not included in CalculationResult.
-        # Users can extend to pass target separately.
-
         ax.scatter(ds, ps, hs, color='blue', marker='o', s=40, label='Solvents')
         # Annotate points
         for d, p, h, lab in zip(ds, ps, hs, labels):

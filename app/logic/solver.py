@@ -1,9 +1,3 @@
-"""Solver and validation routines for HSP mixture calculations.
-
-This module now accepts and returns application dataclasses defined in
-`app.models` (Solvent, HSPTarget, CalculationResult) so the logic layer
-uses structured interfaces instead of loose dicts.
-"""
 import numpy as np
 
 from .matrix import build_hsp_matrix, generate_perturbed_targets
@@ -17,12 +11,7 @@ def solve_concentration_for_combination(
         hsp_matrix: np.ndarray,
         perturbed_targets: np.ndarray,
     ) -> CContext:
-    """
-    Solve concentrations using pseudoinverse and compute error matrix.
-
-    Returns a lightweight dict used internally by this module; higher-level
-    functions will convert results into `CalculationResult` dataclasses.
-    """
+    """ Solve concentrations using pseudoinverse and compute error matrix.  """
     S = hsp_matrix
     S_pinv = np.linalg.pinv(S)
     concentrations = S_pinv @ perturbed_targets  # (n_solvents, n_samples)
@@ -115,12 +104,7 @@ def run_hsp_mixture_calculation(
         solvent_info: dict[str, Solvent],
         target: HSPTarget,
     ) -> list[CalculationResult]:
-    """Main pipeline: prepare matrices, iterate combos, and collect valid results.
-
-    `params` is an `HSPTarget` dataclass instance. `solvent_info_dict` may be
-    a mapping of CAS->dict; callers typically pass the DB slice. We construct
-    `Solvent` dataclasses when needed.
-    """
+    """Main pipeline: prepare matrices, iterate combos, and collect valid results.  """
     # derive settings from HSPTarget
     n_cosolvent = int(target.max_cosolvent)
     n_samples = int(target.n_perturb)

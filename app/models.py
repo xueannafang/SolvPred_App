@@ -9,7 +9,6 @@ class Solvent:
     D: float  | None = None
     P: float  | None = None
     H: float  | None = None
-    # optional additional fields commonly present in the DB
     bp: float | None = None  # boiling point
     No: int | None = None  # index number
     ims_idx: str | None = None  # immiscible solvent index
@@ -65,13 +64,7 @@ class CalculationResult:
 
 @dataclass
 class PContext:
-    """Container dataclass used to carry data through the pipeline stages.
-
-    This is optional (the pipeline still accepts plain dict contexts) but
-    provides a typed, discoverable structure for the main data used by
-    the pipeline and UI layers.
-    """
-    # Without these nothing works.
+    """Container dataclass used to carry data through the pipeline stages.  """
     selected_cas_list: list[str]
     solvent_info: dict[str, Solvent]
     target: HSPTarget

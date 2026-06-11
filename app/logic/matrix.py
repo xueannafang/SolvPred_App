@@ -29,5 +29,4 @@ def generate_perturbed_targets(target: HSPTarget, n_samples=50, std=0.1):
     noise = np.random.normal(0.0, std, size=(n_samples, 3))
     perturbed = np.tile(target_hsp, (n_samples, 1))
     perturbed[:, :3] += noise
-    # perturbed[:, 3] = 1.0
     return perturbed.T

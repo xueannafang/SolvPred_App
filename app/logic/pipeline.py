@@ -1,14 +1,3 @@
-"""Pipeline engine for SolvPred calculation stages.
-
-This module provides a small, composable pipeline that allows adding
-preprocessing, calculation, and postprocessing stages. Each stage is a
-callable that accepts and returns a `context` dict. The engine simply
-passes the context through each stage in sequence.
-
-The design is intentionally lightweight so you can add new stages (e.g.
-database lookups, caching, external tooling integration, additional
-filters) later without changing the core algorithm code.
-"""
 from . import solver
 from . import temperature_correction
 from . import filters as filters_module
@@ -57,18 +46,15 @@ def run_pipeline(pctx: PContext, stages: list[Stage]| None = None) -> PContext:
     return out
 
 def apply_temperature_correction_stage(pctx: PContext) -> PContext:
-    """Apply temperature correction to solvent_info if requested in params.
-
+    """
+    Apply temperature correction to solvent_info if requested in params.
     This transforms HSPs in-place in `solvent_info` so downstream stages
     (filters/calculation) operate on temperature-corrected values.
     """
-    # prefer explicit target temperature on the typed target, else fall back to params
     solvent_info = pctx.solvent_info or {}
 
     target_temp = pctx.target.temperature if pctx.target is not None else 25.0
     if target_temp != 25.0:
-        # Intentionally do not swallow errors here: if temperature correction fails
-        # it likely indicates invalid solvent data or a bug in the correction logic.
         solvent_info = temperature_correction.correct_hsp_database(solvent_info, 25.0, target_temp)
         pctx.solvent_info = solvent_info
     return pctx
@@ -84,7 +70,6 @@ def calculation_stage(pctx: PContext) -> PContext:
 
 def prepare_process_results_stage(pctx: PContext) -> PContext:
     """
-    Convert raw pipeline results (may contain numpy) to plain Python types.
     Produces `processed_results` in the context.
     """
     if pctx.raw_results is None:
@@ -95,10 +80,8 @@ def prepare_process_results_stage(pctx: PContext) -> PContext:
     return pctx
 
 def final_format_stage(pctx: PContext) -> PContext:
-    """Ensure final results are JSON-serializable and provide `final_results`.
-
-    Keeps `processed_results` as the backward-compatible return value but
-    also assembles `final_results` including labels when available.
+    """
+    Final stage to extract the final results from the processed results.
     """
     processed = pctx.processed_results
     pctx.final_results = processed[-1] if processed else None

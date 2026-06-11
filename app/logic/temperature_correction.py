@@ -1,10 +1,3 @@
-"""
-temperature_correction.py
-
-Provides functions for temperature correction of HSP values for solvents.
-TODO: Check and validate formulas with literature.
-"""
-
 import math
 from dataclasses import asdict
 
@@ -12,17 +5,17 @@ from app.models import Solvent
 from app.exceptions import InvalidSolventError
 
 def correct_hsp_d(d: float, delta_temp: float) -> float:
-    """Return temperature-corrected δD."""
+    """Return temperature-corrected delta_D."""
     tml_expn_coeff = 0.0007  # K^-1, from HSPiP
     return float(d) * math.exp(-1.25 * tml_expn_coeff * delta_temp)
 
 def correct_hsp_p(p: float, delta_temp: float) -> float:
-    """Return temperature-corrected δP."""
+    """Return temperature-corrected delta_P."""
     tml_expn_coeff = 0.0007
     return float(p) * math.exp(-0.5 * tml_expn_coeff * delta_temp)
 
 def correct_hsp_h(h: float, delta_temp: float) -> float:
-    """Return temperature-corrected δH."""
+    """Return temperature-corrected delta_H."""
     tml_expn_coeff = 0.0007
     return float(h) * math.exp(-(0.00122 + 0.5 * tml_expn_coeff) * delta_temp)
 
@@ -32,7 +25,6 @@ def correct_solvent_hsp(solvent: Solvent, current_temp: float, target_temp: floa
     Assumes solvent dict has keys 'D', 'P', 'H'.
     """
     if not solvent:
-        # make sure we have valid solvent data
         raise InvalidSolventError(solvent.CAS, "Invalid solvent data for temperature correction.")
     delta_temp = target_temp - current_temp
     d = correct_hsp_d(solvent.D, delta_temp) # type: ignore

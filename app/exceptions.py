@@ -1,9 +1,3 @@
-"""Custom exceptions used across the SolvPred application.
-
-Provide a clear, small hierarchy so callers can catch either broad
-application errors (`SolvPredError`) or specific cases (e.g. `SolventNotFound`).
-"""
-
 class SolvPredError(Exception):
     """Base class for all SolvPred application errors."""
 

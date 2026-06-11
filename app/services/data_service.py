@@ -4,9 +4,9 @@ from pathlib import Path
 from app.models import Solvent
 from shutil import copyfile
 
-# User data storage: keep simple and predictable. Store user-added solvents
-# in a per-user config directory under the home folder. This keeps the
-# built-in database intact and makes user data portable.
+# User data storage  
+# Store user-added solvents in a per-user config directory under the home folder. 
+# This keeps the built-in database intact and makes user data portable.
 _APP_DIR = Path(__file__).parents[1]
 _APP_DATA_DIR = _APP_DIR / 'data'
 _DEFAULT_DB = _APP_DATA_DIR / 'solv_pred_db_v2.json'
@@ -29,16 +29,7 @@ _USER_PARAMS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def solvent_from_record(rec: dict) -> Solvent | None:
-    """Convert a raw DB record (dict) into a `Solvent` dataclass.
-
-    Keep the implementation simple and permissive: prefer direct field
-    extraction and light casting (no heavy type checks). If a numeric
-    field is missing or cannot be cast, fall back to `None` (or 0.0 for
-    core HSP fields to preserve numeric behaviour).
-    """
-    # Minimal mapping: copy fields into the Solvent dataclass.
-    # Keep conversion and validation out of this function; it should be
-    # simple and fast. Return a Solvent instance or None if no CAS present.
+    """Convert a raw DB record (dict) into a `Solvent` dataclass.  """
     cas = rec.get('CAS')
     if not cas:
         return None
@@ -111,7 +102,7 @@ def append_user_solvent_to_path(rec: dict, path: str) -> None:
 
 
 def load_combined_db() -> list[dict]:
-    """Load built-in DB and append user-supplied solvents (user last)."""
+    """Load built-in DB and append user-supplied solvents."""
     base = load_db()
     user = load_user_solvents()
     if not user:
@@ -150,7 +141,6 @@ def search_solvents(db: list[dict], key: str, limit: int = 50) -> list[Solvent]:
 def get_solvent_by_cas(db_map: dict[str, Solvent], cas: str) -> Solvent | None:
     return db_map.get(cas)
 
-# Function to load parameters from a file
 def load_params_from_path(path: str) -> dict:
     p = Path(path)
     if not p.exists():
@@ -158,7 +148,6 @@ def load_params_from_path(path: str) -> dict:
     with open(p, 'r', encoding='utf-8') as fh:
         return json.load(fh)
 
-# Function to save parameters to a file
 def save_params_to_path(path: str, params: dict) -> None:
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)

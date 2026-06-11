@@ -136,8 +136,6 @@ class SelectSolventsPage(QWidget):
         self._refresh_full_list()
         self._refresh_selected()
 
-    # fast-search panel removed; browse filter handles search across full list
-
     def _add_from_double_click(self, item: QListWidgetItem) -> None:
         cas = item.data(Qt.ItemDataRole.UserRole)
         if not cas:

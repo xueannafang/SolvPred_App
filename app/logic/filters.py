@@ -60,53 +60,7 @@ def get_miscibility_filter(session: SetupSession) -> Callable[[Solvent], bool]:
     return miscibility_filter
 
 
-# def advanced_filter_results(valid_combinations: Iterable[Dict[str, Any]], solvent_info_dict: Dict[str, Any], temp: float) -> List[Dict[str, Any]]:
-#     no_to_cas = {}
-#     for cas, info in solvent_info_dict.items():
-#         s = info if isinstance(info, Solvent) else data_service.solvent_from_record(info or {})
-#         if s.No is not None:
-#             no_to_cas[int(s.No)] = cas
-
-#     labeled_results: List[Dict[str, Any]] = []
-#     for combo in valid_combinations:
-#         # expect `combo` to be a `CalculationResult` dataclass with `.cas_tuple`
-#         cas_tuple = getattr(combo, 'cas_tuple')
-#         # convert per-cas to Solvent dataclass before checking bp
-#         def _to_sol(cas):
-#             info = solvent_info_dict.get(cas)
-#             return info if isinstance(info, Solvent) else data_service.solvent_from_record(info or {})
-
-#         pass_bp = all(check_boiling_point(_to_sol(cas), temp) for cas in cas_tuple)
-#         pass_misc = check_miscibility(cas_tuple, solvent_info_dict, no_to_cas)
-#         if pass_bp and pass_misc:
-#             label = 'Pass'
-#             label_class = 'label-pass'
-#             sort_order = 0
-#         elif not pass_bp and pass_misc:
-#             label = 'Low Boiling Point'
-#             label_class = 'label-bp'
-#             sort_order = 2
-#         elif pass_bp and not pass_misc:
-#             label = 'Likely Immiscible'
-#             label_class = 'label-misc'
-#             sort_order = 1
-#         else:
-#             label = 'Low Boiling Point, Likely Immiscible'
-#             label_class = 'label-fail'
-#             sort_order = 3
-#         labeled_results.append({
-#             'combo': combo,
-#             'pass_bp': pass_bp,
-#             'pass_misc': pass_misc,
-#             'label': label,
-#             'label_class': label_class,
-#             'sort_order': sort_order
-#         })
-#     labeled_results.sort(key=lambda x: x['sort_order'])
-#     return labeled_results
-
 __all__ = [
     "get_boiling_point_filter",
     "get_miscibility_filter",
-    # "advanced_filter_results",
 ]
