@@ -1,8 +1,8 @@
 # SolvPred App
 
-SolvPred App is the code-free desktop GUI for [SolvPred](https://github.com/xueannafang/hsp_toolkit_solv_pred_v_2.0).
+SolvPred App is the desktop GUI for [SolvPred](https://github.com/xueannafang/hsp_toolkit_solv_pred_v_2.0).
 
-It provides a user-friendly workflow for solvent mixture design based on Hansen solubility parameters. (Check [here](https://github.com/xueannafang/HSP_toolkit_docs/blob/main/hsp_tool_general_intro.md) for project backgrounds.)
+It provides a user-friendly workflow for solvent mixture design based on Hansen solubility parameters. (Check [here](https://github.com/xueannafang/HSP_toolkit_docs/blob/main/hsp_tool_general_intro.md) for project background.)
 
 ---
 
