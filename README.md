@@ -211,7 +211,11 @@ modified as needed.
 Use **Edit selection** or **Edit params** to return to earlier steps. Click **New session**
 to start the entire process fresh.
 
+---
 
+# Cite this work:
+
+X. Fang, S. Li, B. Gao, E. M. Gale, C. F. J. Faul, N. Fey, An Inverse Design Workflow for Solvent Mixtures Based on Hansen Solubility Parameters, ChemRxiv, 2026, [https://doi.org/10.26434/chemrxiv.15005117/v1](https://doi.org/10.26434/chemrxiv.15005117/v1).
 ---
 
 This project is licensed under [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html).
